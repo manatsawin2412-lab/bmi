@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณ BMI</title>
+    <style>
+        body { 
+            font-family: 'Tahoma', sans-serif; 
+            background-color: #f8f9fa; 
+            display: flex; 
+            flex-direction: column; /* จัดให้ชื่อโปรแกรมอยู่บน ตารางอยู่ล่าง */
+            align-items: center; 
+            padding: 20px; 
+        }
+
+        /* สไตล์ชื่อโปรแกรม */
+        .header-title {
+            color: #0033FF;
+            font-size: 40px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        .header-title hr {
+            border: 0;
+            height: 4px;
+            background-color: #FF0000;
+            width: 50%;
+            margin-top: 10px;
+        }
+
+        /* สไตล์ตารางคำนวณ */
+        .bmi-table { 
+            width: 100%; 
+            max-width: 550px; 
+            border-collapse: collapse; 
+            background: white; 
+            border: 1px solid #e0e0e0; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .bmi-table td { 
+            padding: 20px; 
+            border: 1px solid #f0f0f0; 
+            vertical-align: middle; 
+        }
+        .label-cell { 
+            width: 35%; 
+            font-weight: bold; 
+            color: #003380; 
+            font-size: 18px; 
+            background-color: #fdfdfd; 
+        }
+        
+        /* สไตล์ Input และปุ่ม */
+        input[type="number"], input[type="text"] {
+            width: 90%; 
+            padding: 12px; 
+            border: 1px solid #80aaff; 
+            border-radius: 4px; 
+            font-size: 18px; 
+            color: #333;
+        }
+        input[readonly] { 
+            background-color: #f9f9f9; 
+            border: 1px solid #ddd; 
+            color: #d32f2f; /* ให้ตัวเลขผลลัพธ์เด่นขึ้น */
+            font-weight: bold;
+        }
+        .unit-text { 
+            display: block; 
+            margin-top: 8px; 
+            color: #003380; 
+            font-weight: bold; 
+        }
+        
+        .btn {
+            width: 100%; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 4px; 
+            background-color: #003380; 
+            color: white; 
+            font-size: 18px; 
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { 
+            background-color: #002255; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-clear {
+            background-color: #0044cc; /* ปรับสีเคลียร์ข้อมูลให้ต่างเล็กน้อย */
+        }
+        
+        ::placeholder { color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        โปรแกรมคำนวณหาค่าดัชนีมวลกาย (BMI)
+        <hr>
+    </div>
+
+    <table class="bmi-table">
+        <tr>
+            <td class="label-cell">น้ำหนัก :</td>
+            <td>
+                <input type="number" id="w" placeholder="เช่น 60">
+                <span class="unit-text">กิโลกรัม</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label-cell">ส่วนสูง :</td>
+            <td>
+                <input type="number" id="h" placeholder="เช่น 170">
+                <span class="unit-text">เซนติเมตร</span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button class="btn" onclick="cal()">คำนวณ</button></td>
+        </tr>
+        <tr>
+            <td class="label-cell">ค่าที่ได้ :</td>
+            <td><input type="text" id="res_num" readonly></td>
+        </tr>
+        <tr>
+            <td class="label-cell">คุณอยู่ในเกณฑ์ :</td>
+            <td><input type="text" id="res_text" readonly></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button class="btn btn-clear" onclick="resetForm()">เคลียร์ข้อมูล</button></td>
+        </tr>
+    </table>
+
+    <script>
+        function cal() {
+            let weight = parseFloat(document.getElementById('w').value);
+            let height = parseFloat(document.getElementById('h').value) / 100;
+
+            if (weight > 0 && height > 0) {
+                let bmi = (weight / (height * height)).toFixed(2);
+                document.getElementById('res_num').value = bmi;
+
+                let status = "";
+                if (bmi < 18.5) status = "ผอม / น้ำหนักต่ำกว่าเกณฑ์";
+                else if (bmi <= 22.9) status = "ปกติ / สุขภาพดี";
+                else if (bmi <= 24.9) status = "ท้วม / เริ่มอ้วน";
+                else if (bmi <= 29.9) status = "อ้วนระดับ 1";
+                else status = "อ้วนระดับ 2 (อ้วนมาก)";
+
+                document.getElementById('res_text').value = status;
+            } else {
+                alert("กรุณากรอกข้อมูลน้ำหนักและส่วนสูงให้ถูกต้อง");
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('w').value = "";
+            document.getElementById('h').value = "";
+            document.getElementById('res_num').value = "";
+            document.getElementById('res_text').value = "";
+        }
+    </script>
+
+</body>
+</html>
